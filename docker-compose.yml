@@ -1,0 +1,51 @@
+# For more information: https://laravel.com/docs/sail
+version: '3'
+services:
+  laravel_app_kcny:
+    container_name: laravel_app_kcny
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    tty: true
+    build: images/$IMAGE
+    ports:
+      - $APACHE_PORT:$APACHE_PORT
+      - $APACHE_SSL_PORT:$APACHE_SSL_PORT
+    volumes:
+      - $SOURCE_LOCATION:/var/www/html
+      - $APACHE_LOG_VOLUME:/var/log/apache2
+      - ./images/$IMAGE/ssl:/var/ssl-cert
+      - ./images/$IMAGE/php.ini:/etc/php/$PHP_VERSION/apache2/php.ini
+      - ./images/$IMAGE/xdebug.ini:/etc/php/$PHP_VERSION/mods-available/xdebug.ini
+      - ./images/$IMAGE/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+      - ./images/$IMAGE/apache2.conf:/etc/apache2/apache2.conf
+      - ./images/$IMAGE/ports.conf:/etc/apache2/ports.conf
+      - ./images/$IMAGE/wait-for-mysql.sh:/root/wait-for-mysql.sh
+    environment:
+      APP_DNS: $APP_DNS
+      APACHE_PORT: $APACHE_PORT
+      APACHE_SSL_PORT: $APACHE_SSL_PORT
+      ENABLE_OPCACHE: $ENABLE_OPCACHE
+    networks:
+      - laravel_app_kcny_network
+    depends_on:
+      - laravel_app_kcny_db
+  laravel_app_kcny_db:
+    container_name: laravel_app_kcny_db
+    image: "mysql:5.7"
+    ports:
+      - "$DB_PORT:3306"
+    environment:
+      MYSQL_PORT: $DB_PORT
+      MYSQL_DATABASE: $DB_DATABASE
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - "./data/mysql/init:/docker-entrypoint-initdb.d"
+      - "./data/mysql/db:/var/lib/mysql"
+      - "./data/mysql/conf:/etc/mysql/conf.d"
+    networks:
+      - laravel_app_kcny_network
+    command: --sql_mode="" --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+networks:
+  laravel_app_kcny_network:
+    driver: bridge
