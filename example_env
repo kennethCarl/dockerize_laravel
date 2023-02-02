@@ -7,7 +7,7 @@ ENABLE_OPCACHE=0
 
 DB_USERNAME=root
 DB_PASSWORD=root
-DB_DATABASE=comment_system
+DB_DATABASE=comment_system_kcny
 DB_PORT=3306
 
 SOURCE_LOCATION=${DIR_PATH}/comment_system
