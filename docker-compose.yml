@@ -6,7 +6,13 @@ services:
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     tty: true
-    build: images/$IMAGE
+    build:
+      # can be github url or any directory
+      # this should be the root directory of the files we want to copy into the container
+      context: ./images/$IMAGE/
+      # this is where we install apache and other services our app need
+      # we can also copy files from our context (path) into the docker container 
+      dockerfile: Dockerfile
     ports:
       - $APACHE_PORT:$APACHE_PORT
       - $APACHE_SSL_PORT:$APACHE_SSL_PORT

@@ -1,2 +1,4 @@
 
 .env
+apache_log/*
+data/mysql/db/*

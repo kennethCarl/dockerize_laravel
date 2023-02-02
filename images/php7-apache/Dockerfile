@@ -14,8 +14,17 @@ COPY docker-entrypoint.sh /root/
 RUN dos2unix /root/docker-entrypoint.sh
 RUN chmod +x /root/docker-entrypoint.sh
 
+COPY composer.sh /root/
+RUN dos2unix /root/composer.sh
+RUN chmod +x /root/composer.sh
+
+COPY npm.sh /root/
+RUN dos2unix /root/npm.sh
+RUN chmod +x /root/npm.sh
+
 RUN a2enmod rewrite
 RUN a2enmod ssl
 RUN a2enmod lbmethod_byrequests
+RUN a2enmod headers
 
 CMD ["/root/docker-entrypoint.sh"]
