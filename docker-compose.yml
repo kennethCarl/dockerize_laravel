@@ -16,6 +16,7 @@ services:
     ports:
       - $APACHE_PORT:$APACHE_PORT
       - $APACHE_SSL_PORT:$APACHE_SSL_PORT
+      - "9003:9003"
     volumes:
       - $SOURCE_LOCATION:/var/www/html
       - $APACHE_LOG_VOLUME:/var/log/apache2
